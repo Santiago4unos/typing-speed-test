@@ -28,6 +28,20 @@ header img {
     width: 100px;
 }
 
+footer {
+    background-color: #EEE2DC;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+footer img {
+    max-width: 100%;
+    width: 70px;
+}
+
 .typing-info-rows span {
     padding: 0 1vmin;
 }
