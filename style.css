@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow-x: hidden;
+    background-color: #DDD0C8;
+}
+
+header {
+    background-color: #fbfbf0;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1, h3 {
+    text-align: center;
+}
+
+header img {
+    max-width: 100%;
+    width: 100px;
+}
+
+.typing-info-rows span {
+    padding: 0 1vmin;
+}
+
+div#typing-test {
+    padding: 10px;
+    text-align: center;
+}
+
+form input#typing-test-input {
+    border: none;
+    outline: none;
+    text-align: right;
+    font-size: 2rem;
+    color: blue;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color: transparent;
+}
+
+form div#double-container-typing {
+    white-space: nowrap;
+    display: flex;
+    border: 2px solid black;
+    margin: 10px 10%;
+    font-size: 0;
+}
+
+div#typing-test-container-left {
+    width: 50%;
+    display: flex;
+    overflow: hidden;
+    justify-content: flex-end;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+div#typing-test-container-right {
+    width: 50%;
+    overflow: hidden;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.5rem;
+}
+
+#timer {
+    font-size: 10vmin;
+    font-weight: 300;
+    color: green;
+}
+
+#typing-info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.typing-info-rows {
+    padding: 1vmin 0px;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/typing.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Typing speed test</title>
+</head>
+<body>
+    <header>
+        <div class="image-container">
+            <a href="./"><img src="./img/cowboy_possum.png" alt="Cowboy possum"></a>
+        </div>
+    </header>
+    <h1>Welcome to the TSMLJBDD!</h1>
+    <h3>(Typing Speed Machine Learning Jabba Dabba Doo)</h3>
+
+    <div id="typing-test">
+        <div id="typing-info">
+            <div id="first-row" class="typing-info-rows">
+                <span id="timer">1:00</span>
+            </div>
+            <div id="second-row" class="typing-info-rows">
+                <span id="chars-typed">Characters typed: 0</span>
+                <span id="words-typed">Words per minute: 0</span>
+                <span id="accuracy">Accuracy: 0%</span>
+            </div>
+            <div id="third-row" class="typing-info-rows">
+                <label for="time">Time: </label>
+                <select name="time" id="time-input">
+                    <option value="60" id="60-sec">1 minute</option>
+                    <option value="180" id="180-sec">3 minutes</option>
+                    <option value="300" id="300-sec">5 minutes</option>
+                </select>
+            </div>
+            <div id="fourth-row" class="typing-info-rows">
+                <p>Test your typing speed right here!</p>
+            </div>
+        </div>
+        <form>
+            <div id="double-container-typing">
+                <div id="typing-test-container-left">
+                    <input type="text" id="typing-test-input" autofocus="true" autocomplete="off">
+                </div>
+                <div id="typing-test-container-right"></div>
+            </div>
+            <button onclick="reset()">Reset</button>
+        </form>
+    </div>
+</body>
+</html>
