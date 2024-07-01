@@ -150,7 +150,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         }, 1000);
     }
 
-    function wordTyped(e) {
+    function debounce(func, delay) {
+        let debounceTimer;
+        return function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => func.apply(this, arguments), delay);
+        }
+    }
+
+    function wordTyped() {
         if (time_is_over) {
             return;
         }
@@ -158,81 +166,97 @@ document.addEventListener("DOMContentLoaded", async function() {
             startTimer();
             first_letter = false;
         }
+
         let next_word = document.getElementsByClassName("words")[0];
-        if (next_word.innerHTML == "" && e.key == " " && typing_input.value.trimStart() == word_list_212[word_count]) {
+        let typed_value = typing_input.value.trimStart();
+
+        if (next_word.innerHTML === "" && typed_value === word_list_212[word_count] + " ") {
             typing_input.style.textDecoration = "none";
             next_word.remove();
             word_count++;
+
             let new_word_span = document.createElement("span");
             new_word_span.innerHTML = word_list_212[word_count + 14];
             new_word_span.setAttribute("style", "padding: 0px 0.33rem 0px 0px;font-size: 2rem;position: relative;z-index: -1;");
             new_word_span.setAttribute("class", "words");
             RIGHT_WORDS_CONTAINER.append(new_word_span);
-            
+
             let written_word_span = document.createElement("span");
             written_word_span.innerHTML = typing_input.value;
             written_word_span.setAttribute("style", "padding: 0px 0.33rem 0px 0px;font-size: 2rem;position: relative;z-index: -1;color: cornflowerblue;");
             LEFT_WORDS_CONTAINER.append(written_word_span);
 
             typing_input.value = "";
-            let typing_input_clone = typing_input.cloneNode();
-            typing_input.remove();
-            typing_input_clone.style.width = "calc(0.75rem)";
-            // I don't know why the new input is created with a space that I have to remove manually
-            // So I put this to remove it
-            typing_input_clone.value = typing_input_clone.value.trimStart();
-            LEFT_WORDS_CONTAINER.append(typing_input_clone);
-            
-            typing_input = typing_input_clone;
-            typing_input.focus()
-            
+            resetInput();
+
             if (LEFT_WORDS_CONTAINER.childElementCount > 6) {
-                LEFT_WORDS_CONTAINER.childNodes[0].remove()
+                LEFT_WORDS_CONTAINER.childNodes[0].remove();
             }
-            typing_input.addEventListener("keydown", wordTyped);
 
             char_num = 0;
-            let wpm = word_count / (TIME_INPUT.value / 60);
-            wpm = Math.round((wpm + Number.EPSILON) * 100) / 100
-            words_typed_span.innerHTML = `Words per minute: ${wpm}`;
-            return
-        } else if (next_word.innerHTML == "" && e.key != "Backspace") {
+            updateWPM();
+            return;
+        } else if (next_word.innerHTML === "" && typing_input.value !== "") {
             typing_input.style.textDecoration = "line-through";
             return;
         }
 
         let alpha_regex = /^[a-zA-Z]$/;
-        if (alpha_regex.test(e.key)) {
+        if (alpha_regex.test(typed_value.slice(-1))) {
             typing_input.style.width = `calc(${typing_input.style.width} + 1rem)`;
-        } else if (e.key == "Backspace" && typing_input.style.width != "calc(0.75rem)") {
+        } else if (typed_value.slice(-1) === " " && typing_input.style.width !== "calc(0.75rem)") {
             typing_input.style.width = `calc(${typing_input.style.width} - 1rem)`;
         }
 
-        if (typing_input.value.trimStart() + e.key == word_list_212[word_count].substring(0, char_num + 1)) {
+        if (typed_value === word_list_212[word_count].substring(0, char_num + 1)) {
             chars_typed++;
             char_num++;
             typing_input.style.textDecoration = "none";
             next_word.innerHTML = word_list_212[word_count].substring(char_num);
-        } else if (e.key == "Backspace" && char_num != 0 && extra_chars != 0) {
-            extra_chars--;
-        } else if (e.key == "Backspace" && char_num != 0) {
+        } else if (typed_value.slice(-1) === " " && char_num !== 0) {
             chars_typed--;
             char_num--;
             next_word.innerHTML = word_list_212[word_count].substring(char_num);
-        } else if (e.key != next_word.innerHTML.substring(0, 1) && e.key.length == 1) {
+        } else if (typed_value.slice(-1) !== next_word.innerHTML.substring(0, 1) && typed_value.slice(-1).length === 1) {
             typing_input.style.textDecoration = "line-through";
             extra_chars++;
             wrong_chars++;
         }
-        accuracy =  100 - (wrong_chars * 100 / chars_typed);
+        
+        updateAccuracy();
+        updateStats();
+    }
+
+    function resetInput() {
+        let typing_input_clone = typing_input.cloneNode();
+        typing_input.remove();
+        typing_input_clone.value = "";
+        typing_input_clone.style.width = "calc(0.75rem)";
+        LEFT_WORDS_CONTAINER.append(typing_input_clone);
+        typing_input = typing_input_clone;
+        typing_input.focus();
+        typing_input.addEventListener("input", debounce(wordTyped, 300));
+    }
+
+    function updateWPM() {
+        let wpm = word_count / (TIME_INPUT.value / 60);
+        wpm = Math.round((wpm + Number.EPSILON) * 100) / 100;
+        words_typed_span.innerHTML = `Words per minute: ${wpm}`;
+    }
+
+    function updateAccuracy() {
+        accuracy = 100 - (wrong_chars * 100 / chars_typed);
         if (isNaN(accuracy)) {
             accuracy = 0;
         } else {
-            accuracy = Math.round((accuracy + Number.EPSILON) * 100) / 100
+            accuracy = Math.round((accuracy + Number.EPSILON) * 100) / 100;
         }
+    }
+
+    function updateStats() {
         chars_typed_span.innerHTML = `Characters typed: ${chars_typed}`;
         accuracy_span.innerHTML = `Accuracy: ${accuracy}%`;
     }
 
-    typing_input.addEventListener("keydown", wordTyped);
+    typing_input.addEventListener("input", debounce(wordTyped, 300));
 })
